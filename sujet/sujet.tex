@@ -1,0 +1,127 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{ae,lmodern}
+\usepackage[french]{babel}
+
+\usepackage{amsmath,amsfonts}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\usepackage[colorlinks]{hyperref}
+
+\title{\textbf{Problème à N corps} \\
+       \Large Simuler un (petit) univers\\
+       \small version 0}
+\author{Ismail Bennani \\
+        <\href{mailto:ismail.lahkim.bennani@ens.fr}{ismail.lahkim.bennani@ens.fr}>}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Mesures exceptionnelles}\\
+Étant donnée la situation actuelle, j'ai créé un \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} sur lequel vous pourrez poser vos questions et me faire part de vos problèmes. Je tacherai aussi de répondre à mes mails le plus vite possible.\\
+Je serai aussi disponible via Skype ou Zoom pour faire des points réguliers avec vous.
+
+
+\section{Projet}
+
+\subsection{Description du problème}
+
+Ce problème consiste à résoudre les équations du mouvement de $N$ corps quelconques interagissant dans un champs gravitationnel en dimension ${n\in \{ 2,3 \}}$.\\
+Soient $(c_i)_{i\in[0,N]}$ nos corps. Pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\overrightarrow{p_i} \in \mathbb{R}^n$ sa position, $\overrightarrow{v_i} \in \mathbb{R}^n$ sa vitesse et $\overrightarrow{a_i} \in \mathbb{R}^n$ son accélération.\\
+Pour chaque couple de corps (distincts) $c_i, c_j$, on note $r_{i,j} = \norm{p_j - p_i}$ la distance euclidienne entre ces corps et $\overrightarrow{u_{i,j}} = \frac{1}{r_{i,j}}(\overrightarrow{p_j}-\overrightarrow{p_i})$ le vecteur unitaire colinéaire à $\overrightarrow{p_ip_j}$.
+
+La force gravitationnelle appliquée par un corps $j \in [0,N]$ sur un corps $i \in [0,N], i \ne j$ s'écrit:
+
+\begin{equation}
+    \overrightarrow{F_{i,j}} = G \frac{m_im_j}{r_{i,j}} \overrightarrow{u_{i,j}}
+\end{equation}
+
+La dynamique du système est alors décrite par les équations suivantes:
+
+\begin{equation}
+\forall i \in [0,N], \left\{\begin{aligned}
+    \ \overrightarrow{\dot{p_i}} & = \overrightarrow{v_i} \\
+    \ \overrightarrow{\dot{v_i}} & = \overrightarrow{a_i} \\
+    \ \overrightarrow{\dot{a_i}} & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \overrightarrow{F_{i,j}} \\
+\end{aligned}\right.
+\end{equation}
+
+\subsection{Travail attendu et évaluation}
+
+Vous écrirez un simulateur capable de calculer l'évolution des positions (en 2D \textbf{OU} 3D) des N corps dans le temps, ce simulateur devra utiliser un solveur d'équations différentielles que vous aurez écrit. Vous écrirez aussi un affichage graphique pour visualiser cette évolution. \\
+Le projet est volontairement peu cadré pour que vous puissiez approfondir les parties qui vous intéressent le plus. Vous pourrez par exemple
+\begin{itemize}
+    \item implémenter des optimisations pour accélérer le calcul du système d'équations différentielles (cf. section \ref{moteurphysique})
+    \item implémenter un solveur d'équations différentielles plus précis que la méthode d'Euler (cf. section \ref{solveur})
+    \item implémenter des fonctionnalités pour votre interface graphique (cf. section \ref{interface})
+\end{itemize}
+
+\vspace{1em}
+
+\noindent Le rendu attendu est une archive contenant
+\begin{itemize}
+    \item l'intégralité du code source
+    \item pour C++: des instructions de compilation (en particulier les librairies nécessaires et la commande de compilation)
+    \item pour Python: un fichier requirements.txt (cf \href{https://pip.pypa.io/en/stable/user_guide/#requirements-files}{fichier requirement.txt})
+    \item un rapport concis expliquant votre travail, en particulier:
+    \begin{itemize}
+        \item la répartition des taches dans votre binôme
+        \item les librairies externes utilisées
+        \item le fonctionnement de votre programme
+        \item ce que vous avez approfondi
+        \item les difficultés rencontrées et vos solutions, les choix techniques effectués
+    \end{itemize}
+\end{itemize}
+
+\vspace{1em}
+
+\noindent Je vous suggère d'utiliser Python ou C++ comme langage de programmation, mais vous pouvez me consulter si vous désirez utiliser autre chose. \\
+En section \ref{outils}, je vous suggère quelques librairies utiles que vous pouvez utiliser avec Python et C++, vous êtes libres d'utiliser les librairies que vous voulez. Par contre, veillez à bien noter dans votre rapport tout ce que vous avez implémenté vous-même et tout ce qui vient d'une librairie externe.
+
+Attention, la valeur d'un code ne se mesure pas au nombre de lignes ! Un bon code doit être commenté (pas besoin de trop en faire) et clair. Veillez par exemple à choisir des noms de variable explicites et informatifs.
+
+\pagebreak
+
+\section{Implémentation}
+
+Dans cette section, je vous décrit une façon d'implémenter le simulateur en trois parties bien délimitées et indépendantes les unes des autres. Vous \textbf{n'êtes pas} tenus de respecter cette implémentation.
+
+\subsection{Moteur Physique}
+\label{moteurphysique}
+
+Le rôle du moteur physique est de calculer une approximation de la dynamique du problème. Il s'occupe d'une part de fournir au solveur d'équations différentielles les valeurs à intégrer, et d'autre part de fournir à l'interface graphique les données nécessaires à l'affichage des corps (positions, vitesses, ...).
+
+Une approximation simple dans notre cas est celle où les réelles sont représentés par des flottants machines, et où l'accélération d'un corps est obtenue en calculant les $N-1$ forces qu'il subit.\\
+Cependant, on peut être plus efficace en remarquant que
+\begin{equation}
+    \overrightarrow{F_{i,j}} = - \overrightarrow{F_{j,i}}
+\end{equation}
+Grâce à ça, on peut obtenir le même résultat que précédemment en économisant la moitié des calculs.
+
+Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simuler un grand nombre de corps. En effet, la dynamique du système doit être calculée au moins une fois à chaque pas de calcul du solveur d'équations différentielles.\\
+Une façon d'accélérer les calculs est de sacrifier en partie la précision du résultats. Plusieurs méthodes existent pour faire ça dans notre cas:
+\begin{itemize}
+    \item \href{https://en.wikipedia.org/wiki/Barnes\%E2\%80\%93Hut_simulation}{Simulation de Barnes-Hut}
+\end{itemize}
+
+\vspace{1em}
+
+\noindent\textbf{Note} Lors de l'implémentation de ce module, il sera judicieux d'écrire une classe de vecteurs pour représenter les positions, vitesses, accélérations et forces. \\
+Vous pourrez aussi surcharger les opérateurs arithmétiques ($+$, $*$, ...) pour manipuler les instances de cette classe.\\
+Surcharge opérateurs Python: \href{https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/233046-appliquez-des-methodes-speciales#/id/r-232928}{explication}, \href{https://docs.python.org/fr/3/library/operator.html}{liste des opérateurs}\\
+Surcharge opérateurs C++: \href{https://openclassrooms.com/fr/courses/1894236-programmez-avec-le-langage-c/1897891-surchargez-un-operateur}{explication}, \href{https://web.maths.unsw.edu.au/~lafaye/CCM/cpp/cppop.htm}{liste des opérateurs}
+
+\subsection{Solveur d'équations différentielles}
+\label{solveur}
+
+\subsection{Interface graphique}
+\label{interface}
+
+\subsection{Outils}
+\label{outils}
+
+\end{document}
