@@ -23,7 +23,7 @@
 \maketitle
 
 \noindent\textbf{Mesures exceptionnelles}\\
-Étant donnée la situation actuelle, vous pourrez me joindre sur \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} pour me poser vos questions en plus de mon mail.\\
+Étant donnée la situation actuelle, vous pourrez me joindre sur \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} pour me poser vos questions en plus de mon mail (envoyez moi votre mail pour que je vous invite). \\
 Je serai aussi disponible via Skype ou Zoom pour faire des points réguliers avec vous.
 
 
@@ -32,29 +32,29 @@ Je serai aussi disponible via Skype ou Zoom pour faire des points réguliers ave
 \subsection{Description du problème}
 
 Ce problème consiste à résoudre les équations du mouvement de $N$ corps quelconques interagissant dans un champs gravitationnel en dimension ${n\in \{ 2,3 \}}$.\\
-Soient $(c_i)_{i\in[0,N]}$ nos corps. Pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\myvec{p_i} \in \mathbb{R}^n$ sa position, $\myvec{v_i} \in \mathbb{R}^n$ sa vitesse et $\myvec{a_i} \in \mathbb{R}^n$ son accélération.\\
-Pour chaque couple de corps (distincts) $c_i, c_j$, on note $r_{i,j} = \norm{p_j - p_i}$ la distance euclidienne entre ces corps et $\myvec{u_{i,j}} = \frac{1}{r_{i,j}}(\myvec{p_j}-\myvec{p_i})$ le vecteur unitaire colinéaire au vecteur $\myvec{p_ip_j}$.
+Soient $(c_i)_{i\in[0,N]}$ nos corps. Pour chaque corps $c_i$ et chaque instant $t \in \mathbb{R}$, on note $m_i \in \mathbb{R}$ sa masse, $\myvec{p_i}(t) \in \mathbb{R}^n$ sa position, $\myvec{v_i}(t) \in \mathbb{R}^n$ sa vitesse et $\myvec{a_i}(t) \in \mathbb{R}^n$ son accélération.\\
+Pour chaque autre corps $c_j$, on note $r_{i,j}(t) = \norm{\myvec{p_j}(t) - \myvec{p_i}(t)}$ la distance euclidienne entre ces corps et $\myvec{u_{i,j}}(t) = \frac{1}{r_{i,j}}(\myvec{p_j}(t)-\myvec{p_i}(t))$ le vecteur unitaire allant de $\myvec{p_i}(t)$ à $\myvec{p_j}(t)$.
 
 La force gravitationnelle appliquée par un corps $j \in [0,N]$ sur un corps $i \in [0,N], i \ne j$ s'écrit:
 
 \begin{equation*}
-    \myvec{F_{i,j}} = G \frac{m_im_j}{r_{i,j}} \myvec{u_{i,j}}
+    \myvec{F_{i,j}}(t) = G \frac{m_im_j}{r_{i,j}(t)} \myvec{u_{i,j}}(t)
 \end{equation*}
 
 La dynamique du système est alors décrite par les équations suivantes:
 
 \begin{equation*}
 \forall i \in [0,N], \left\{\begin{aligned}
-    \ \myvec{\dot{p_i}} & = \myvec{v_i} \\
-    \ \myvec{\dot{v_i}} & = \myvec{a_i} \\
-    \ \myvec{\dot{a_i}} & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}} \\
+    \ \myvec{\dot{p_i}}(t) & = \myvec{v_i}(t) \\
+    \ \myvec{\dot{v_i}}(t) & = \myvec{a_i}(t) \\
+    \ \myvec{\dot{a_i}}(t) & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t) \\
 \end{aligned}\right.
 \end{equation*}
 
 \subsection{Travail attendu et évaluation}
 
 Vous écrirez un simulateur capable de calculer l'évolution des positions (en 2D \textbf{OU} 3D) des N corps dans le temps, ce simulateur devra utiliser un solveur d'équations différentielles que vous aurez écrit. Vous écrirez aussi un affichage graphique pour visualiser cette évolution. \\
-Le projet est volontairement peu cadré pour que vous puissiez approfondir les parties qui vous intéressent le plus. Vous pourrez par exemple:
+Le projet est volontairement peu cadré pour que vous puissiez approfondir \textbf{les parties qui vous intéressent le plus}. Vous pourrez par exemple:
 \begin{itemize}
     \item implémenter des optimisations pour accélérer le calcul du système d'équations différentielles (cf. section \ref{moteurphysique})
     \item implémenter un solveur d'équations différentielles plus précis que la méthode d'Euler (cf. section \ref{solveur})
@@ -121,15 +121,72 @@ Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simule
 
 \vspace{1em}
 
-\noindent\textbf{Note} Lors de l'implémentation de ce module, il sera judicieux d'écrire une classe de vecteurs pour représenter les positions, vitesses, accélérations et forces. \\
+\noindent\textbf{Note} \\
+Lors de l'implémentation de ce module, il sera judicieux d'écrire une classe de vecteurs pour représenter les positions, vitesses, accélérations et forces. \\
 Vous pourrez aussi surcharger les opérateurs arithmétiques ($+$, $*$, ...) pour manipuler les instances de cette classe.\\
 Surcharge opérateurs: \href{https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/233046-appliquez-des-methodes-speciales#/id/r-232928}{explication}, \href{https://docs.python.org/fr/3/library/operator.html}{liste des opérateurs}
 
 \subsection{Solveur d'équations différentielles}
 \label{solveur}
 
+Le rôle du solveur d'équations différentielles (\textbf{O}rdinary \textbf{D}ifferential \textbf{E}quation) est de calculer la dynamique du système. Il reçoit du moteur physique les positions initiales des variables et leurs dérivées puis calcule la nouvelle valeur des variables à un horizon donné.\\
+Résoudre une ODE, c'est calculer les valeurs d'une fonction $\myvec{y} : \mathbb{R} \rightarrow \mathbb{R}^k$ définie par
+\begin{equation*}
+\forall t \ge 0, \myvec{\dot{y}}(t) = \myvec{f}(t, \myvec{y}(t)) \quad\quad \myvec{y}(0) \text{ connue}
+\end{equation*}
+à des temps donnés. On note $(t_n) \in \mathbb{R}^\mathbb{N}$ la suite des temps auxquels on veut calculer la valeur de $\myvec{y}$, et $\myvec{y_n} = y(t_n)$.
+
+\vspace{1em}
+
+\noindent Notez qu'ici, notre système est bien une ODE:
+\begin{equation*}
+    \forall i \in [0,N], \left\{\begin{aligned}
+    \ \myvec{\dot{p_i}}(t) & = \myvec{v_i}(t) \\
+    \ \myvec{\dot{v_i}}(t) & = \myvec{a_i}(t) \\
+    \ \myvec{\dot{a_i}}(t) & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t) \\
+    \end{aligned}\right.
+\end{equation*}
+se réécrit en
+\begin{equation*}
+    \forall i \in [0,N], \myvec{\dot{\left[\begin{aligned}
+        \myvec{p_i}(t) \\ \myvec{v_i}(t) \\ \myvec{a_i}(t)
+    \end{aligned}\right]}} =
+    \left[\begin{gathered}
+    \myvec{v_i}(t) \\ \myvec{a_i}(t) \\ \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t)
+    \end{gathered}\right]
+\end{equation*}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item \textbf{Méthode d'Euler explicite} \\
+    Approximation du premier ordre:
+    \begin{equation*}
+        \forall n \ge 0, \myvec{y_{n+1}} = \myvec{y_n} + (t_{n+1} - t_n) * \myvec{f}(t_n, \myvec{y_n}) \quad\quad \myvec{y_0} = \myvec{y}(0)
+    \end{equation*}
+    La fonction qui implémente cette méthode pourrait s'écrire\\
+    \verb!def integrate(y, h, y'): return y + h * y'!\\
+    et être appelé par \verb!new_y = integrate(y, h, f(t,y))!. \\
+    Cependant, les méthodes qui suivent auront besoin d'évaluer f en plusieurs points entre $t$ et $t+h$, pour produire des résultats plus précis. Pour cette raison, la façon la plus classique d'implémenter une fonction d'intégration est de lui passer en argument la fonction $\myvec{f}$:\\
+    \verb!def integrate(f, y0, t, h): return y0 + h * f(t, y0)!
+
+    \item \textbf{Leapfrog algorithm}
+
+    \item \textbf{Runge Kutta family}
+\end{itemize}
+
 \subsection{Interface graphique}
 \label{interface}
+
+\subsection{Orbites stables}
+
+Si vous voulez faire de beaux dessins, vous pouvez simuler des orbites stables (appelées \emph{chorégraphies}); c'est à dire des positions initiales des corps telles que, au bout d'un moment, leur mouvement devienne périodique. Trouver ces positions initiales est loin d'être facile, il y a de nombreux travaux de recherche dessus. Je vous met ici une petite liste de pointeur qui peuvent vous être utiles si vous voulez approfondir cette partie là.
+
+\begin{itemize}
+    \item Une explication accessible \url{http://www.scholarpedia.org/article/N-body_choreographies}
+    \item Papier: \href{http://eprints.maths.manchester.ac.uk/2063/1/choreographies.pdf}{Classification of symmetry groups for planar n-body choreographies}, une famille de solutions pour $N$ quelconque, illustrée \href{http://rectangleworld.com/demos/nBody/}{ici}
+    \item \href{http://www.combinatorialmath.ca/Students/DyckThesis.pdf}{Thèse: Periodic Solutions to then $n$-Body Problem}, quelques solutions au chapitre 8
+\end{itemize}
 
 \subsection{Outils}
 \label{outils}
