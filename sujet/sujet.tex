@@ -22,7 +22,7 @@
 \maketitle
 
 \noindent\textbf{Mesures exceptionnelles}\\
-Étant donnée la situation actuelle, j'ai créé un \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} sur lequel vous pourrez poser vos questions et me faire part de vos problèmes. Je tacherai aussi de répondre à mes mails le plus vite possible.\\
+Étant donnée la situation actuelle, vous pourrez me joindre sur \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} pour me poser vos questions en plus de mon mail.\\
 Je serai aussi disponible via Skype ou Zoom pour faire des points réguliers avec vous.
 
 
@@ -36,37 +36,38 @@ Pour chaque couple de corps (distincts) $c_i, c_j$, on note $r_{i,j} = \norm{p_j
 
 La force gravitationnelle appliquée par un corps $j \in [0,N]$ sur un corps $i \in [0,N], i \ne j$ s'écrit:
 
-\begin{equation}
+\begin{equation*}
     \overrightarrow{F_{i,j}} = G \frac{m_im_j}{r_{i,j}} \overrightarrow{u_{i,j}}
-\end{equation}
+\end{equation*}
 
 La dynamique du système est alors décrite par les équations suivantes:
 
-\begin{equation}
+\begin{equation*}
 \forall i \in [0,N], \left\{\begin{aligned}
     \ \overrightarrow{\dot{p_i}} & = \overrightarrow{v_i} \\
     \ \overrightarrow{\dot{v_i}} & = \overrightarrow{a_i} \\
     \ \overrightarrow{\dot{a_i}} & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \overrightarrow{F_{i,j}} \\
 \end{aligned}\right.
-\end{equation}
+\end{equation*}
 
 \subsection{Travail attendu et évaluation}
 
 Vous écrirez un simulateur capable de calculer l'évolution des positions (en 2D \textbf{OU} 3D) des N corps dans le temps, ce simulateur devra utiliser un solveur d'équations différentielles que vous aurez écrit. Vous écrirez aussi un affichage graphique pour visualiser cette évolution. \\
-Le projet est volontairement peu cadré pour que vous puissiez approfondir les parties qui vous intéressent le plus. Vous pourrez par exemple
+Le projet est volontairement peu cadré pour que vous puissiez approfondir les parties qui vous intéressent le plus. Vous pourrez par exemple:
 \begin{itemize}
     \item implémenter des optimisations pour accélérer le calcul du système d'équations différentielles (cf. section \ref{moteurphysique})
     \item implémenter un solveur d'équations différentielles plus précis que la méthode d'Euler (cf. section \ref{solveur})
     \item implémenter des fonctionnalités pour votre interface graphique (cf. section \ref{interface})
 \end{itemize}
+Je vous demande à tous d'écrire au moins une version naïve du moteur physique, du solveur et de l'interface graphique qui n'utilise \underline{aucune} librairie externe. Vous pourrez ensuite remplacer des parties de votre code par des interfaces vers un code existant, par exemple utiliser \verb!numpy! pour vos opérations sur les vecteurs et vos opérations matricielles.\\
+Je vous conseille donc de penser votre architecture logicielle de manière modulaire, pour qu'il soit facile de changer d'échanger les modules. Par exemple, il faudrait que vous puissiez passer d'une représentation interne des vecteurs à une représentation \verb!numpy! en changeant simplement votre instruction \verb!import .. from ..!.
 
 \vspace{1em}
 
 \noindent Le rendu attendu est une archive contenant
 \begin{itemize}
     \item l'intégralité du code source
-    \item pour C++: des instructions de compilation (en particulier les librairies nécessaires et la commande de compilation)
-    \item pour Python: un fichier requirements.txt (cf \href{https://pip.pypa.io/en/stable/user_guide/#requirements-files}{fichier requirement.txt})
+    \item un \href{https://pip.pypa.io/en/stable/user_guide/#requirements-files}{fichier requirement.txt}
     \item un rapport concis expliquant votre travail, en particulier:
     \begin{itemize}
         \item la répartition des taches dans votre binôme
@@ -79,41 +80,49 @@ Le projet est volontairement peu cadré pour que vous puissiez approfondir les p
 
 \vspace{1em}
 
-\noindent Je vous suggère d'utiliser Python ou C++ comme langage de programmation, mais vous pouvez me consulter si vous désirez utiliser autre chose. \\
-En section \ref{outils}, je vous suggère quelques librairies utiles que vous pouvez utiliser avec Python et C++, vous êtes libres d'utiliser les librairies que vous voulez. Par contre, veillez à bien noter dans votre rapport tout ce que vous avez implémenté vous-même et tout ce qui vient d'une librairie externe.
+\noindent Je vous suggère d'utiliser Python comme langage de programmation, mais vous pouvez me consulter si vous désirez utiliser autre chose. \\
+En section \ref{outils}, je vous parle de quelques librairies utiles pour Python, vous êtes libres d'utiliser les librairies que vous voulez. Par contre, veillez à bien noter dans votre rapport tout ce que vous avez implémenté vous-même et tout ce qui vient d'une librairie externe.
 
-Attention, la valeur d'un code ne se mesure pas au nombre de lignes ! Un bon code doit être commenté (pas besoin de trop en faire) et clair. Veillez par exemple à choisir des noms de variable explicites et informatifs.
+Attention, la valeur d'un code ne se mesure pas au nombre de lignes ! Faites du code commenté (pas besoin de trop en faire) et clair. Veillez par exemple à choisir des noms de variable explicites et informatifs.
 
 \pagebreak
 
 \section{Implémentation}
 
-Dans cette section, je vous décrit une façon d'implémenter le simulateur en trois parties bien délimitées et indépendantes les unes des autres. Vous \textbf{n'êtes pas} tenus de respecter cette implémentation.
+Dans cette section, je vous décrit une façon d'implémenter le simulateur en trois parties bien délimitées et indépendantes les unes des autres. Vous \textbf{n'êtes pas} tenus de respecter cette implémentation. \\
+Je vous conseille vivement de commencer par implémenter les version les plus naïves des différents modules. Cela vous permettra en particulier de réfléchir aux interfaces entre ces modules, de commencer à écrire des tests unitaires, de mettre en place votre dépôt git, et surtout d'avoir une meilleure vision d'ensemble du projet. Contactez moi à ce moment là pour qu'on discute de ce que vous comptez faire par la suite.
 
 \subsection{Moteur Physique}
 \label{moteurphysique}
 
-Le rôle du moteur physique est de calculer une approximation de la dynamique du problème. Il s'occupe d'une part de fournir au solveur d'équations différentielles les valeurs à intégrer, et d'autre part de fournir à l'interface graphique les données nécessaires à l'affichage des corps (positions, vitesses, ...).
+Le rôle du moteur physique est de calculer une approximation de la dynamique du problème. Il s'occupe d'une part de fournir au solveur d'équations différentielles les valeurs à intégrer, et d'autre part de fournir à l'interface graphique les données nécessaires à l'affichage des corps (positions, vitesses, ...). \\
+Ce moteur peut gérer les collisions entre corps, considérer que deux corps qui se touchent fusionnent, où ignorer les collisions. Les méthodes que je donne plus bas ignorent les collisions.
 
-Une approximation simple dans notre cas est celle où les réelles sont représentés par des flottants machines, et où l'accélération d'un corps est obtenue en calculant les $N-1$ forces qu'il subit.\\
-Cependant, on peut être plus efficace en remarquant que
-\begin{equation}
-    \overrightarrow{F_{i,j}} = - \overrightarrow{F_{j,i}}
-\end{equation}
-Grâce à ça, on peut obtenir le même résultat que précédemment en économisant la moitié des calculs.
+Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simuler un grand nombre de corps. En effet, la dynamique du système doit être calculée au moins une fois à chaque pas de calcul du solveur d'équations différentielles.
 
-Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simuler un grand nombre de corps. En effet, la dynamique du système doit être calculée au moins une fois à chaque pas de calcul du solveur d'équations différentielles.\\
-Une façon d'accélérer les calculs est de sacrifier en partie la précision du résultats. Plusieurs méthodes existent pour faire ça dans notre cas:
 \begin{itemize}
-    \item \href{https://en.wikipedia.org/wiki/Barnes\%E2\%80\%93Hut_simulation}{Simulation de Barnes-Hut}
+    \item \textbf{Méthode naïve} $\mathcal{O}(N^2)$ \\
+    Une approximation simple dans notre cas est celle où les réelles sont représentés par des flottants machines, et où l'accélération d'un corps est obtenue en calculant les $N-1$ forces qu'il subit.\\
+    Cependant, on peut être plus efficace en remarquant que
+    \begin{equation*}
+    \overrightarrow{F_{i,j}} = - \overrightarrow{F_{j,i}}
+    \end{equation*}
+    Grâce à ça, on peut obtenir le même résultat que précédemment en économisant la moitié des calculs.
+    \item \textbf{Simulation de Barnes-Hut} $\mathcal{O}(N log(N))$ \\
+    On peut réduire le nombre de calculs à effectuer en sacrifiant en partie la précision de leurs résultats. Cette méthode consiste à construire un arbre (\href{https://en.wikipedia.org/wiki/Octree}{octree}) dont les feuilles sont vos corps, et dont les nœuds intermédiaires représentent des portions de l'espace contenant leurs fils. Dans chaque zone on peut définir un corps virtuel en son centre dont la masse est égale à la somme des masses des corps s'y trouvant. \\
+    Ensuite, pour calculer l'interaction gravitationnelle que subit un corps en particulier, on pourra remplacer la contributions d'un groupe de corps éloigné par celle de son corps virtuel. \\
+    \url{https://en.wikipedia.org/wiki/Barnes\%E2\%80\%93Hut_simulation}\\
+    \url{http://arborjs.org/docs/barnes-hut}
+    \item \textbf{Fast multiple methods} $\mathcal{O}(N)$ \\
+    \url{https://en.wikipedia.org/wiki/Fast_multipole_method}\\
+    \href{https://arxiv.org/pdf/astro-ph/0202512.pdf}{A Hierarchical $\mathcal{O}(N)$ Force Calculation Algorithm}
 \end{itemize}
 
 \vspace{1em}
 
 \noindent\textbf{Note} Lors de l'implémentation de ce module, il sera judicieux d'écrire une classe de vecteurs pour représenter les positions, vitesses, accélérations et forces. \\
 Vous pourrez aussi surcharger les opérateurs arithmétiques ($+$, $*$, ...) pour manipuler les instances de cette classe.\\
-Surcharge opérateurs Python: \href{https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/233046-appliquez-des-methodes-speciales#/id/r-232928}{explication}, \href{https://docs.python.org/fr/3/library/operator.html}{liste des opérateurs}\\
-Surcharge opérateurs C++: \href{https://openclassrooms.com/fr/courses/1894236-programmez-avec-le-langage-c/1897891-surchargez-un-operateur}{explication}, \href{https://web.maths.unsw.edu.au/~lafaye/CCM/cpp/cppop.htm}{liste des opérateurs}
+Surcharge opérateurs: \href{https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/233046-appliquez-des-methodes-speciales#/id/r-232928}{explication}, \href{https://docs.python.org/fr/3/library/operator.html}{liste des opérateurs}
 
 \subsection{Solveur d'équations différentielles}
 \label{solveur}
