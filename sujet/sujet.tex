@@ -8,6 +8,7 @@
 \usepackage{amsmath,amsfonts}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\myvec}[1]{\ensuremath{\mathbf{#1}}}
 
 \usepackage[colorlinks]{hyperref}
 
@@ -31,22 +32,22 @@ Je serai aussi disponible via Skype ou Zoom pour faire des points réguliers ave
 \subsection{Description du problème}
 
 Ce problème consiste à résoudre les équations du mouvement de $N$ corps quelconques interagissant dans un champs gravitationnel en dimension ${n\in \{ 2,3 \}}$.\\
-Soient $(c_i)_{i\in[0,N]}$ nos corps. Pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\overrightarrow{p_i} \in \mathbb{R}^n$ sa position, $\overrightarrow{v_i} \in \mathbb{R}^n$ sa vitesse et $\overrightarrow{a_i} \in \mathbb{R}^n$ son accélération.\\
-Pour chaque couple de corps (distincts) $c_i, c_j$, on note $r_{i,j} = \norm{p_j - p_i}$ la distance euclidienne entre ces corps et $\overrightarrow{u_{i,j}} = \frac{1}{r_{i,j}}(\overrightarrow{p_j}-\overrightarrow{p_i})$ le vecteur unitaire colinéaire à $\overrightarrow{p_ip_j}$.
+Soient $(c_i)_{i\in[0,N]}$ nos corps. Pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\myvec{p_i} \in \mathbb{R}^n$ sa position, $\myvec{v_i} \in \mathbb{R}^n$ sa vitesse et $\myvec{a_i} \in \mathbb{R}^n$ son accélération.\\
+Pour chaque couple de corps (distincts) $c_i, c_j$, on note $r_{i,j} = \norm{p_j - p_i}$ la distance euclidienne entre ces corps et $\myvec{u_{i,j}} = \frac{1}{r_{i,j}}(\myvec{p_j}-\myvec{p_i})$ le vecteur unitaire colinéaire au vecteur $\myvec{p_ip_j}$.
 
 La force gravitationnelle appliquée par un corps $j \in [0,N]$ sur un corps $i \in [0,N], i \ne j$ s'écrit:
 
 \begin{equation*}
-    \overrightarrow{F_{i,j}} = G \frac{m_im_j}{r_{i,j}} \overrightarrow{u_{i,j}}
+    \myvec{F_{i,j}} = G \frac{m_im_j}{r_{i,j}} \myvec{u_{i,j}}
 \end{equation*}
 
 La dynamique du système est alors décrite par les équations suivantes:
 
 \begin{equation*}
 \forall i \in [0,N], \left\{\begin{aligned}
-    \ \overrightarrow{\dot{p_i}} & = \overrightarrow{v_i} \\
-    \ \overrightarrow{\dot{v_i}} & = \overrightarrow{a_i} \\
-    \ \overrightarrow{\dot{a_i}} & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \overrightarrow{F_{i,j}} \\
+    \ \myvec{\dot{p_i}} & = \myvec{v_i} \\
+    \ \myvec{\dot{v_i}} & = \myvec{a_i} \\
+    \ \myvec{\dot{a_i}} & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}} \\
 \end{aligned}\right.
 \end{equation*}
 
@@ -105,7 +106,7 @@ Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simule
     Une approximation simple dans notre cas est celle où les réelles sont représentés par des flottants machines, et où l'accélération d'un corps est obtenue en calculant les $N-1$ forces qu'il subit.\\
     Cependant, on peut être plus efficace en remarquant que
     \begin{equation*}
-    \overrightarrow{F_{i,j}} = - \overrightarrow{F_{j,i}}
+    \myvec{F_{i,j}} = - \myvec{F_{j,i}}
     \end{equation*}
     Grâce à ça, on peut obtenir le même résultat que précédemment en économisant la moitié des calculs.
     \item \textbf{Simulation de Barnes-Hut} $\mathcal{O}(N log(N))$ \\
