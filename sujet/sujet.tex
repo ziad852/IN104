@@ -23,10 +23,6 @@
 
 \maketitle
 
-\noindent\textbf{Mesures exceptionnelles}\\
-Étant donnée la situation actuelle, vous pourrez me joindre sur \href{https://join.slack.com/t/in104n-bodyproblem/shared_invite/zt-cu07sew6-nw8ikZtOZBy2UmpqReQdWA}{slack} pour me poser vos questions (envoyez moi votre mail pour que je vous invite). J'y maintiendrai une FAQ pour répondre aux questions récurrentes. \\
-Vous pourrez bien sur me contacter par mail, et je serai aussi disponible via Skype ou Zoom pour faire des points réguliers avec vous.
-
 \section{Projet}
 \label{projet}
 
@@ -58,28 +54,26 @@ Vous écrirez un simulateur capable de calculer l'évolution des positions (en 2
 Ce sujet est volontairement long pour que vous puissiez approfondir \textbf{les parties qui vous intéressent le plus}. Je n'attends pas du tout de vous que vous fassiez tout, faites votre maximum dans le temps que vous avez. Vous pourrez par exemple:
 \begin{itemize}
     \item implémenter des optimisations pour accélérer le calcul du système d'équations différentielles (cf. section \ref{moteurphysique})
-    \item implémenter un solveur d'équations différentielles plus précis que la méthode d'Euler explicite (cf. section \ref{solveur})
-    \item implémenter des fonctionnalités pour votre interface graphique (cf. section \ref{interface})
+    \item implémenter plusieurs solveurs d'équations différentielles (cf. section \ref{solveur})
+    \item implémenter des fonctionnalités supplémentaires pour votre interface graphique (cf. section \ref{interface})
     \item calculer automatiquement des orbites stables (cf. section \ref{solstables})
     \item gérer les collisions (cf. section \ref{collisions})
 \end{itemize}
-Je demande que chaque groupe écrive au moins une version naïve, \underline{sans} librairie externe, du moteur physique, du solveur et de l'interface graphique. Vous pourrez ensuite remplacer des parties de votre code par des interfaces vers un code existant, par exemple utiliser \verb!numpy! pour vos opérations sur les vecteurs et vos opérations matricielles. Faites cohabiter les différentes versions dans le même code et faites en sorte de pouvoir choisir quelle version utiliser facilement.\\
+Je demande que chaque groupe écrive au moins une version naïve, \underline{sans} librairie externe, du moteur physique, du solveur et de l'interface graphique. Vous pourrez ensuite remplacer des parties de votre code par des interfaces vers un code existant, par exemple vous pourrez utiliser \verb!numpy! pour vos opérations sur les vecteurs et vos opérations matricielles. Pour cela je vous encourage à penser l'architecture de vos classes (et surtout leurs interfaces) de sorte à ce que vous puissiez passer de l'une à l'autre des implémentations facilement.\\
 
 \vspace{1em}
 
-\noindent Le rendu attendu est une archive contenant
+\noindent Le rendu attendu est un PDF contenant
 \begin{itemize}
-    \item l'intégralité du code source
-    \item un \href{https://pip.pypa.io/en/stable/user_guide/#requirements-files}{fichier requirement.txt}
+    \item lien vers un git contenant l'intégralité du code source (pensez à inclure un \href{https://pip.pypa.io/en/stable/user_guide/#requirements-files}{fichier requirement.txt})
     \item un rapport \underline{concis} expliquant votre travail, en particulier:
     \begin{itemize}
-        \item la répartition des taches dans votre binôme
+        \item la répartition des taches dans votre groupe
         \item les librairies externes utilisées
         \item le fonctionnement de votre programme, l'architecture de vos classes
         \item ce que vous avez approfondi, les algorithmes implémentés
         \item les difficultés rencontrées et vos solutions, les choix techniques effectués
     \end{itemize}
-    \item avoir un \og effet wow \fg{} est un plus, cela peut être fait à travers une belle démo, à travers une grosse simulation, etc..
 \end{itemize}
 Comme vous l'a dit Natalia, ayez une version préliminaire du rapport prête à la moitié du cours pour que je puisse vous faire un retour.
 
@@ -88,12 +82,13 @@ Comme vous l'a dit Natalia, ayez une version préliminaire du rapport prête à 
 \noindent Je vous suggère d'utiliser Python comme langage de programmation, mais vous pouvez me consulter si vous désirez utiliser autre chose. \\
 En section \ref{outils}, je vous parle de quelques librairies utiles pour Python, vous êtes libres d'utiliser les librairies que vous voulez. Par contre, veillez à bien noter dans votre rapport tout ce que vous avez implémenté vous-même et tout ce qui vient d'une librairie externe.
 
-Attention, la valeur d'un code ne se mesure pas au nombre de lignes ! Faites du code correct, commenté (pas besoin de trop en faire) et clair, dans cet ordre. Veillez par exemple à choisir des noms explicites et informatifs pour vos variables, vos fonctions et vos classes.
+Attention, la valeur d'un code ne se mesure pas au nombre de lignes ! Faites du code correct, commenté (sans exagération) et clair, dans cet ordre. Veillez par exemple à choisir des noms explicites et informatifs pour vos variables, vos fonctions et vos classes.
 
 \section{Implémentation}
 
-Dans cette section, je vous décrit une façon d'implémenter le simulateur en trois parties bien délimitées et indépendantes les unes des autres. Vous \textbf{n'êtes pas} tenus de respecter cette implémentation. \\
-Dans la section \ref{projet} et dans ce qui suit, je ne précise jamais les unités des grandeurs physiques. Du fait des ordres de grandeurs (et de leur écart) des valeurs qu'on manipule (vitesse terre par rapport au soleil~${\approx 10^4}$ m.s$^{-1}$, distance terre-soleil~${\approx 10^{11}}$ m, poids soleil~${\approx 10^{30}}$ kg, \dots), les erreurs dues à l'approximation flottante et aux approximations des solveurs sont importantes. Si vous voulez utiliser des valeurs du monde réel, je vous conseille d'utiliser les unités suivantes:
+Dans les sections \ref{moteurphysique}, \ref{solveur} et \ref{interface}, je vous décrit \textbf{une} façon d'implémenter le simulateur en trois modules bien délimitées et indépendants les uns des autres. Vous \textbf{n'êtes pas} tenus de respecter cette implémentation. \\
+Les sections \ref{solstables} et \ref{collisions} sont là pour vous donner des idées d'améliorations possibles  pour votre simulateur, et des pointeurs vers des ressources qui vous aideront à implémenter ces idées. \\
+Dans la section \ref{projet} et dans ce qui suit, je ne précise jamais les unités des grandeurs physiques. Les unités du SI font que les valeurs que l'on manipule sont très grandes (et très écartées les unes des autres: vitesse terre par rapport au soleil~${\approx 10^4}$ m.s$^{-1}$, distance terre-soleil~${\approx 10^{11}}$ m, poids soleil~${\approx 10^{30}}$ kg, \dots). De ce fait, les erreurs dues à l'approximation flottante et aux approximations des solveurs sont importantes. Si vous voulez utiliser des valeurs du monde réel, je vous conseille d'utiliser les unités suivantes:
 \begin{itemize}
     \item distance: \href{https://en.wikipedia.org/wiki/Parsec}{parsec} (pc)
     \item masse: \href{https://en.wikipedia.org/wiki/Solar_mass}{masse solaire} (M\textsubscript{\(\odot\)})
@@ -107,7 +102,7 @@ Je vous conseille vivement de commencer par implémenter les version les plus na
 \label{moteurphysique}
 
 Le rôle du moteur physique est de calculer une approximation de la dynamique du problème. Il s'occupe d'une part de fournir au solveur d'équations différentielles les valeurs à intégrer, et d'autre part de fournir à l'interface graphique les données nécessaires à l'affichage des corps (positions, vitesses, ...). \\
-Ce moteur peut gérer les collisions entre corps, considérer que deux corps qui se touchent fusionnent, où ignorer les collisions. Les méthodes que je donne plus bas ignorent les collisions.
+En ce qui concerne les collisions entre corps, ce moteur peut soit les gérer, soit fusionner les corps qui se touchent, ou encore les ignorer. Les méthodes que je donne plus bas ignorent les collisions. Reportez vous à la section \ref{collisions} si vous voulez gérer les collisions.
 
 Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simuler un grand nombre de corps. En effet, la dynamique du système doit être calculée au moins une fois à chaque pas de calcul du solveur d'équations différentielles.
 
@@ -120,8 +115,8 @@ Notez que l'efficacité de ce module sera cruciale si vous voulez pouvoir simule
     \end{equation*}
     Grâce à ça, on peut obtenir le même résultat que précédemment en économisant la moitié des calculs.
     \item \textbf{Simulation de Barnes-Hut} $\mathcal{O}(N log(N))$ \\
-    On peut réduire le nombre de calculs à effectuer en sacrifiant en partie la précision de leurs résultats. Cette méthode consiste à construire un arbre (\href{https://en.wikipedia.org/wiki/Octree}{octree}) dont les feuilles sont vos corps, et dont les nœuds intermédiaires représentent des portions de l'espace contenant leurs fils. Dans chaque zone on peut définir un corps virtuel en son centre dont la masse est égale à la somme des masses des corps s'y trouvant. \\
-    Ensuite, pour calculer l'interaction gravitationnelle que subit un corps en particulier, on pourra remplacer la contributions d'un groupe de corps éloigné par celle de son corps virtuel. \\
+    On peut réduire le nombre de calculs à effectuer en sacrifiant en partie la précision de leurs résultats. Cette méthode consiste à construire un arbre (\href{https://en.wikipedia.org/wiki/Octree}{octree}) dont les feuilles sont vos corps, et dont les nœuds intermédiaires représentent des portions de l'espace (\emph{cellule}) contenant leurs fils. Dans chaque cellule on définit un corps virtuel qui se trouve en son centre et dont la masse est égale à la somme des masses des corps se trouvant dans sa cellule. \\
+    Ensuite, pour calculer l'interaction gravitationnelle que subit un corps en particulier, on pourra remplacer la contributions d'un groupe de corps éloigné par celles des corps virtuels correspondants. \\
     \url{https://en.wikipedia.org/wiki/Barnes\%E2\%80\%93Hut_simulation}\\
     \url{http://arborjs.org/docs/barnes-hut}
     \item \textbf{Fast multiple methods} $\mathcal{O}(N)$ \\
@@ -170,15 +165,15 @@ $\myvec{y}(t)$ est donc un vecteur de dimension $2 * i$ contenant les positions 
 \vspace{1em}
 
 \begin{itemize}
-    \item \textbf{Méthode d'Euler explicite} \\
+    \item \textbf{Méthode naïve: Euler explicite} \\
     Approximation du premier ordre, peu couteuse à calculer mais peu stable, très imprécise:
     \begin{equation*}
         \forall n \ge 0, \myvec{y_{n+1}} = \myvec{y_n} + (t_{n+1} - t_n) * \myvec{f}(t_n, \myvec{y_n}) \quad\quad \myvec{y_0} = \myvec{y}(0)
     \end{equation*}
     La fonction qui implémente cette méthode pourrait s'écrire\\
     \verb!def integrate(y, h, y'): return y + h * y'!\\
-    et être utilisée comme ça: \verb!new_y = integrate(y, h, f(t,y))!. \\
-    Cependant, les méthodes qui suivent auront besoin d'évaluer $\myvec{f}$ en plusieurs points entre $t$ et $t+h$, pour produire des résultats plus précis. Pour cette raison, la façon la plus classique d'implémenter une fonction d'intégration est de lui passer en argument la fonction $\myvec{f}$:\\
+    et être utilisée comme ça: \verb!new_y = integrate(y, h, f(t,y))! (où \verb!h! est l'horizon $(t_{n+1}-t_n)$). \\
+    Cependant, les méthodes qui suivent auront besoin d'évaluer $\myvec{f}$ en plusieurs points entre $t_n$ et $t_{n+1}$, pour produire des résultats plus précis. Pour cette raison, la façon la plus classique d'implémenter une fonction d'intégration est de lui passer en argument la fonction $\myvec{f}$:\\
     \verb!def integrate(f, y0, t, h): return y0 + h * f(t, y0)!\\
     \url{https://www.f-legrand.fr/scidoc/docimg/numerique/euler/euler/euler.html}
 
@@ -215,8 +210,8 @@ $\myvec{y}(t)$ est donc un vecteur de dimension $2 * i$ contenant les positions 
 \subsection{Interface graphique}
 \label{interface}
 
-Le rôle de l'interface est d'abord d'afficher l'état du système à l'écran. Elle peut dans un second temps servir à interagir avec le système: par exemple ajouter un corps avec un clic droit, ou en effacer un avec un clic gauche.\\
-Comme je l'ai dis plus haut, vous devez choisir de travailler en 2D ou en 3D, ce choix influera sur les librairies que vous utiliserez pour l'interface graphique.\\
+Le rôle de l'interface est d'abord d'afficher l'état du système à l'écran. Elle peut dans un second temps servir à interagir avec le système: par exemple ajouter un corps avec un clic gauche, ou en supprimer un avec un clic droit.\\
+Comme je l'ai dis plus haut, vous devez choisir de travailler soit en 2D soit en 3D, ce choix influera sur les librairies que vous utiliserez pour l'interface graphique.\\
 Je vous suggère d'utiliser \verb!pygame! pour la 2D, et \verb!pyOpenGL! pour la 3D. Vous pouvez bien sur utiliser n'importe quelle autre librairie si vous préférez.
 
 \begin{itemize}
@@ -224,10 +219,10 @@ Je vous suggère d'utiliser \verb!pygame! pour la 2D, et \verb!pyOpenGL! pour la
     Je vous laisse suivre l'\href{https://www.pygame.org/docs/}{excellent tutoriel} sur leur site officiel
     \item \textbf{pyOpenGL}\\
     De même, je vous laisse suivre \href{http://pyopengl.sourceforge.net/context/tutorials/index.html}{ce tutoriel}.\\
-    Attention: les librairies de dessin en 3D sont intrinsèquement plus complexes que celles en 2D, en choisissant la 3D vous aurez plus de possibilités mais aussi plus de difficultés techniques à arriver à vos fins.
+    Attention: les librairies de dessin en 3D sont intrinsèquement plus complexes que celles en 2D, en choisissant la 3D vous représenterez plus fidèlement l'univers tel qu'on le connait mais vous aurez plus de difficultés techniques.
 \end{itemize}
 
-Quelque soit ce que vous choisissez, je vous conseille de séparer les unités de votre système physique des unités graphiques. Écrivez des fonctions de changement de base entre votre monde et votre caméra, même si vous n'implémentez pas le zoom, le déplacement de la caméra ou sa rotation. Cela vous permettra de contrôler votre échelle plus facilement.
+Quelque soit votre choix, je vous conseille de séparer les unités des valeurs que manipulent votre système physique de celles des valeurs utiles à l'affichage. Écrivez des fonctions de changement de base entre votre monde et votre caméra, ça vous permettra de contrôler votre échelle plus facilement. Ca vous aidera aussi à implémenter une façon de contrôler la caméra durant la simulation.
 
 \subsection{Orbites stables}
 \label{solstables}
@@ -246,22 +241,21 @@ Si vous voulez faire de beaux dessins, vous pouvez simuler des orbites stables (
 Comme je disais en section \ref{moteurphysique}, il est possible de considérer les collisions dans la résolution de ce problème. Dans ce cas, il faut que nos corps $c_i$ aient une taille. On peut par exemple les assimiler à des sphères de rayon $r_i$.\\
 Le problème de gestion de collisions peut se décomposer en deux étapes: détecter la collision, puis la résoudre.\\
 
-Tout d'abord, on peut approximer l'instant de la collision en considérant qu'elle ne peut se produire qu'a des instants auxquels on échantillonne notre dynamique, c'est à dire à un des $t_n$. Dans ce cas, à chaque pas, il faut chercher si un couple de corps se chevauche (le cas de collisions de plus de 2 corps est plus complexe à traiter et peut être ignoré en première approximation). Une autre solution est de surveiller les instants $t_i$ et $t_{i+1}$ tels que deux corps se chevauchent à $t_{i+1}$ mais pas à $t_i$, puis de chercher l'instant précis auquel a eu lieu la collision. Pour ça on peut interpoler les positions entre ces instants et faire une dichotomie.
+Tout d'abord, on peut approximer l'instant de la collision en considérant qu'elle ne peut se produire qu'a des instants auxquels on échantillonne notre dynamique, c'est à dire à un des $t_n$. Dans ce cas, à chaque pas, il faut chercher si un couple de corps se chevauche (le cas de collisions de plus de 2 corps est plus complexe à traiter et peut être ignoré en première approximation). Une autre solution est de surveiller les instants $t_i$ et $t_{i+1}$ tels que deux corps se chevauchent à $t_{i+1}$ mais pas à $t_i$, puis de chercher l'instant précis auquel a eu lieu la collision. Pour ça on peut interpoler les positions entre ces instants et chercher le zéro de la fonction qui calcule la distance algébrique entre ces corps entre les deux instants (dichotomie, \href{https://en.wikipedia.org/wiki/Newton\%27s_method}{méthode de Newton-Raphson}, ...).
 
 Une fois que cette collision à été détectée, il faut la traiter: c'est à dire faire que les objets ne se chevauchent plus, et mettre à jour leurs vitesses respectives pour tenir compte de la collision; les faire rebondir. On pourrait aussi, dans le cas d'étoiles par exemple, les faire fusionner.
 
-Plus généralement, deux corps très proches les uns des autres vont induire des forces gigantesques l'un sur l'autre, ce qui augmentera l'ordre de grandeur des erreurs que fait votre solveur d'ODE. On peut donc augmenter la fidélité de la simulation en traitant différemment ces cas. Voir \href{https://arxiv.org/pdf/1208.6313.pdf}{Understanding the Dynamics of Collision and Near-Collision Motions in the $N$-Body Problem}.
+Plus généralement, le problème de collision est du au fait que notre modèle ne fonctionne pas si les objets sont trop proches les uns des autres: ces objets induiraient des forces gigantesques l'un sur l'autre, ce qui augmenterait l'ordre de grandeur des erreurs que fait votre solveur d'ODE. Il faut donc traiter ces cas différemment: voir \href{https://arxiv.org/pdf/1208.6313.pdf}{Understanding the Dynamics of Collision and Near-Collision Motions in the $N$-Body Problem} pour approfondir.
 
-Notez que les algorithmes de détection de collisions peuvent être très couteux: une version naïve est de tester à chaque pas de simulation les positions des $\frac{N(N-1)}{2}$ couples de corps possibles. Des méthodes existent pour réduire cette complexité, elles reviennent toutes plus ou moins à distinguer, pour chaque corps, ceux qui sont trop loin, et ceux qui sont suffisamment proches pour être testés exactement. En voila une:  \href{https://www2.cs.duke.edu/courses/cps124/fall01/resources/p373-kim.pdf}{Fast Collision Detection among Multiple Moving Spheres}.
+Notez que les algorithmes de détection de collisions peuvent être très couteux: le plus naïf est celui qui teste à chaque pas de simulation les positions des $\frac{N(N-1)}{2}$ couples de corps possibles. Des méthodes existent pour réduire cette complexité, elles reviennent toutes plus ou moins à distinguer, pour chaque corps, ceux qui sont trop loin, et ceux qui sont suffisamment proches pour être testés exactement. En voila une:  \href{https://www2.cs.duke.edu/courses/cps124/fall01/resources/p373-kim.pdf}{Fast Collision Detection among Multiple Moving Spheres}.
 
 \subsection{Outils}
 \label{outils}
 
-Voici une liste non exhaustive d'outils qui peuvent vous aider. Je rappelle que vous \textbf{devez} implémenter au moins les versions naïves de chaque module du projet, ce n'est que par la suite que vous pouvez remplacer un de vos modules naïf par une interface vers une de ces librairies. Par ailleurs, j'attends de vous que vous approfondissiez certaines parties du projet, c'est à dire que vous écriviez vous-même \emph{certains} algorithmes.
+Voici une liste non exhaustive d'outils qui peuvent vous aider. Je rappelle que vous \textbf{devez} implémenter au moins les versions naïves de chaque module du projet, ce n'est que par la suite que vous pouvez remplacer un de vos modules naïf par une interface vers une de ces librairies. Par ailleurs, j'attends de vous que vous approfondissiez certaines parties du projet, c'est à dire que vous écriviez vous-même \emph{certains} algorithmes avancés.
 \begin{itemize}
     \item \href{https://numpy.org/}{numpy}: librairie de calcul scientifique. Vous ne pourrez pas faire plus efficace que ça pour vos opérations vectorielles et matricielles sur CPU.
     \item \href{https://docs.scipy.org/doc/scipy/reference/}{SciPy}: librairie d'algorithmes numériques. Vous y trouverez des algorithmes d'intégration déjà fait, des algorithmes d'interpolation, d'optimisation. N'hésitez pas à utiliser ces outils.
-    \item \href{https://matplotlib.org/}{Matplotlib}: librairie de visualisation scientifique. Elle peut vous servir à afficher certaines choses rapidement, mais j'attends de vous un meilleur affichage que ça pour le rendu final (cf. section \ref{interface})
 \end{itemize}
 
 \end{document}
