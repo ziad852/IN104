@@ -29,22 +29,22 @@
 \subsection{Description du problème}
 
 Ce problème consiste à résoudre les équations du mouvement de $N$ corps quelconques interagissant dans un champs gravitationnel en dimension ${n\in \{ 2,3 \}}$. \\
-Soient $(c_i)_{i\in[0,N]}$ nos corps. A chaque instant $t \in \mathbb{R}$ et pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\myvec{p_i}(t) \in \mathbb{R}^n$ sa position, $\myvec{v_i}(t) \in \mathbb{R}^n$ sa vitesse et $\myvec{a_i}(t) \in \mathbb{R}^n$ son accélération.\\
+Soient $(c_i)_{i\in[1,N]}$ nos corps. A chaque instant $t \in \mathbb{R}$ et pour chaque corps $c_i$, on note $m_i \in \mathbb{R}$ sa masse, $\myvec{p_i}(t) \in \mathbb{R}^n$ sa position, $\myvec{v_i}(t) \in \mathbb{R}^n$ sa vitesse et $\myvec{a_i}(t) \in \mathbb{R}^n$ son accélération.\\
 Pour chaque autre corps $c_j$, on note $r_{i,j}(t) = \norm{\myvec{p_j}(t) - \myvec{p_i}(t)}$ la distance euclidienne entre ces corps et $\myvec{u_{i,j}}(t) = \frac{1}{r_{i,j}(t)}(\myvec{p_j}(t)-\myvec{p_i}(t))$ le vecteur unitaire allant de $\myvec{p_i}(t)$ à $\myvec{p_j}(t)$.\\
 
-La force gravitationnelle appliquée par un corps $j \in [0,N]$ sur un corps $i \in [0,N], i \ne j$ s'écrit:
+La force gravitationnelle appliquée par un corps $j \in [1,N]$ sur un corps $i \in [1,N], i \ne j$ s'écrit:
 
 \begin{equation*}
-    \myvec{F_{i,j}}(t) = G \frac{m_im_j}{r_{i,j}(t)} \myvec{u_{i,j}}(t)
+    \myvec{F_{i,j}}(t) = G \frac{m_im_j}{r^2_{i,j}(t)} \myvec{u_{i,j}}(t)
 \end{equation*}
 
 La dynamique du système est alors décrite par les équations suivantes:
 
 \begin{equation*}
-\forall i \in [0,N], \left\{\begin{aligned}
+\forall i \in [1,N], \left\{\begin{aligned}
     \ \myvec{\dot{p_i}}(t) & = \myvec{v_i}(t) \\
     \ \myvec{\dot{v_i}}(t) & = \myvec{a_i}(t) \\
-    \ \myvec{a_i}(t) & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t) \\
+    \ \myvec{a_i}(t) & = \frac{1}{m_i} \sum_{j \in [1,N], j \ne i} \myvec{F_{i,j}}(t) \\
 \end{aligned}\right.
 \end{equation*}
 
@@ -145,19 +145,19 @@ Résoudre une ODE, c'est calculer les valeurs d'une fonction $\myvec{y} : \mathb
 
 \noindent Notez qu'ici, notre système est une ODE d'ordre 1:
 \begin{equation*}
-    \forall i \in [0,N], \left\{\begin{aligned}
+    \forall i \in [1,N], \left\{\begin{aligned}
         \ \myvec{\dot{p_i}}(t) & = \myvec{v_i}(t) \\
         \ \myvec{\dot{v_i}}(t) & = \myvec{a_i}(t) \\
-        \ \myvec{a_i}(t) & = \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t) \\
+        \ \myvec{a_i}(t) & = \frac{1}{m_i} \sum_{j \in [1,N], j \ne i} \myvec{F_{i,j}}(t) \\
     \end{aligned}\right.
 \end{equation*}
 se réécrit en
 \begin{equation*}
-    \forall i \in [0,N], \myvec{\dot{\left[\begin{aligned}
+    \forall i \in [1,N], \myvec{\dot{\left[\begin{aligned}
         \myvec{p_i}(t) \\ \myvec{v_i}(t)
     \end{aligned}\right]}} =
     \left[\begin{gathered}
-    \myvec{v_i}(t) \\ \frac{1}{m_i} \sum_{j \in [0,N], j \ne i} \myvec{F_{i,j}}(t)
+    \myvec{v_i}(t) \\ \frac{1}{m_i} \sum_{j \in [1,N], j \ne i} \myvec{F_{i,j}}(t)
     \end{gathered}\right]
 \end{equation*}
 $\myvec{y}(t)$ est donc un vecteur de dimension $2 * i$ contenant les positions et vitesses des différents corps.
@@ -197,9 +197,9 @@ $\myvec{y}(t)$ est donc un vecteur de dimension $2 * i$ contenant les positions 
 
 
     \item \textbf{Algorithme Leapfrog} \\
-    Approximation explicite du deuxième ordre, peu couteuse mais stable pour des mouvement oscillatoires. Elle nécessite d'avoir accès à la vitesse et à l'accélération des variables à intégrer. Ca tombe bien, c'est notre cas. Soit $i \in [0,N]$, en notant $p^i_n = p_i(t_n)$, $v^i_n = v_i(t_n)$, $a^i_n = a_i(t_n)$ et $\Delta t_n = t_{n+1} - t_n$, on a l'approximation suivante:
+    Approximation explicite du deuxième ordre, peu couteuse mais stable pour des mouvement oscillatoires. Elle nécessite d'avoir accès à la vitesse et à l'accélération des variables à intégrer. Ca tombe bien, c'est notre cas. Soit $i \in [1,N]$, en notant $p^i_n = p_i(t_n)$, $v^i_n = v_i(t_n)$, $a^i_n = a_i(t_n)$ et $\Delta t_n = t_{n+1} - t_n$, on a l'approximation suivante:
     \begin{equation*}
-        \forall i \in [0,N], \forall k \in \mathbb{N}, \left\{\begin{aligned}
+        \forall i \in [1,N], \forall k \in \mathbb{N}, \left\{\begin{aligned}
             \ p^i_{k+1} & = p^i_k + \Delta t_n v^i_k + \frac{1}{2}{\Delta t_n}^2 a^i_k\\
             \ v^i_{k+1} & = v^i_k + \frac{1}{2}\Delta t_n(a^i_k + a^i_{k+1})
         \end{aligned}\right.
