@@ -29,7 +29,7 @@ class ISolver:
 
 class DummySolver(ISolver):
     def intgerate(self, t):
-        assert t >= 0,
+        assert t >= 0
         T = self.t0
         y = self.f(self.t0,self.y0) * self.max_step_size + self.y0
         while T < t :
